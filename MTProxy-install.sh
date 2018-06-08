@@ -11,21 +11,26 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 
-if [[ -e /etc/centos-release || -e /etc/redhat-release ]]; then
+if [[ -e /etc/debian_version ]]; then
+	OS=debian
+	GROUPNAME=nogroup
+	RCLOCAL='/etc/rc.local'
+elif [[ -e /etc/centos-release || -e /etc/redhat-release ]]; then
 	OS=centos
 	GROUPNAME=nobody
 	RCLOCAL='/etc/rc.d/rc.local'
 else
-	echo "Looks like you aren't running this installer CentOS"
+	echo "Looks like you aren't running this installer on Debian, Ubuntu or CentOS"
 	exit
 fi
-
 
 
 echo "Welcome to BluestarCo MTProxy easy install setup."
 echo "Okay, that was all I needed. We are ready to set up your MTProxy server now."
 read -n1 -r -p "Press any key to continue..."
 clear
+echo "First, provide the IPv4 address of the network interface you want MTProxy"
+echo "listening to."
 IP=$(ip addr | grep 'inet' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
 	read -p "IP address: " -e -i $IP IP
 	# If $IP is a private IP address, the server must be behind NAT
@@ -35,16 +40,29 @@ IP=$(ip addr | grep 'inet' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,
 		read -p "Public IP address / hostname: " -e PUBLICIP
 fi
 clear
+echo "What port do you want MTProxy listening to?"
+read -p "Port: " -e -i 443 PORT
 echo "Install Updates..."
-yum update -y 
+if [[ "$OS" = 'debian' ]]; then
+				apt update -y
+				apt upgrade -y
+			else
+				yum update -y 
+
+fi
 clear
 echo "Install Development Tools..."
-yum groupinstall "Development Tools" -y
-yum install git -y
-yum install openssl-devel -y
-yum install curl -y
-yum install vim-common
-yum install screen -y
+if [[ "$OS" = 'debian' ]]; then
+				apt install build-essential libssl-dev zlib1g-dev git curl vim-common screen -y
+			else
+				yum groupinstall "Development Tools" -y
+                yum install git -y
+                yum install openssl-devel -y
+                yum install curl -y
+                yum install vim-common
+                yum install screen -y
+
+fi
 cd ~/
 clear
 echo "Downloading MTProxy Source..."
@@ -73,7 +91,7 @@ echo "" >> /etc/systemd/system/MTProxy.service
 echo "[Service]" >> /etc/systemd/system/MTProxy.service
 echo "Type=simple" >> /etc/systemd/system/MTProxy.service
 echo "WorkingDirectory=/root/MTProxy/objs/bin" >> /etc/systemd/system/MTProxy.service
-echo "ExecStart=/root/MTProxy/objs/bin/mtproto-proxy -u nobody -p 8888 -H 443 -S $secret --aes-pwd proxy-secret proxy-multi.conf -M 1" >> /etc/systemd/system/MTProxy.service
+echo "ExecStart=/root/MTProxy/objs/bin/mtproto-proxy -u nobody -p 8888 -H $PORT -S $secret --aes-pwd proxy-secret proxy-multi.conf -M 1" >> /etc/systemd/system/MTProxy.service
 echo "Restart=on-failure" >> /etc/systemd/system/MTProxy.service
 echo "" >> /etc/systemd/system/MTProxy.service
 echo "[Install]" >> /etc/systemd/system/MTProxy.service
@@ -105,8 +123,8 @@ echo
 	echo "Install Finished!"
 	echo
 	echo "Your MTProxy available at :"
-	echo "tg://proxy?server=$IP&port=443&secret=$secret"
-	echo "tg://proxy?server=$IP&port=443&secret=$secret" > ~/MTProxy-link.txt
+	echo "tg://proxy?server=$IP&port=$PORT&secret=$secret"
+	echo "tg://proxy?server=$IP&port=$PORT&secret=$secret" > /root/MTProxy-link.txt
 	echo 
     echo "Your MTProxy link writed to file and available at :"
     echo "/root/MTProxy-link.txt"

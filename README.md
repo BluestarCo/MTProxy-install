@@ -6,7 +6,7 @@ This script will let you setup your own MTProxy server in no more than a minute,
 ### Installation
 Run the script and follow the assistant:
 
-`wget https://git.io/vhgeE -O MTProxy-install.sh && sh MTProxy-install.sh`
+`wget https://git.io/vhgeE -O MTProxy-install.sh && bash MTProxy-install.sh`
 
 
 ### For Uninstall MTProxy 

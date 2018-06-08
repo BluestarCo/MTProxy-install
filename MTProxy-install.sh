@@ -29,8 +29,8 @@ else
 	exit
 fi
 
-
-echo "Welcome to BluestarCo MTProxy easy install setup."
+GREEN='\033[0;32m'
+echo -e "${GREEN} Welcome to BluestarCo MTProxy easy install setup."
 echo "Okay, that was all I needed. We are ready to set up your MTProxy server now."
 read -n1 -r -p "Press any key to continue..."
 clear

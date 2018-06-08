@@ -4,6 +4,11 @@
 #
 # Copyright (c) 2018 BlueStar. Released under the MIT License.
 
+if readlink /proc/$$/exe | grep -q "dash"; then
+	echo "This script needs to be run with bash, not sh"
+	exit
+fi
+
 
 if [[ "$EUID" -ne 0 ]]; then
 	echo "Sorry, you need to run this as root"
@@ -44,8 +49,8 @@ echo "What port do you want MTProxy listening to?"
 read -p "Port: " -e -i 443 PORT
 echo "Install Updates..."
 if [[ "$OS" = 'debian' ]]; then
-				apt update -y
-				apt upgrade -y
+				apt-get -y update
+				apt-get -y upgrade
 			else
 				yum update -y 
 
@@ -53,7 +58,7 @@ fi
 clear
 echo "Install Development Tools..."
 if [[ "$OS" = 'debian' ]]; then
-				apt install build-essential libssl-dev zlib1g-dev git curl vim-common screen -y
+				apt-get -y install build-essential libssl-dev zlib1g-dev git curl vim-common screen systemd
 			else
 				yum groupinstall "Development Tools" -y
                 yum install git -y

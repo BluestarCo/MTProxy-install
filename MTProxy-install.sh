@@ -109,13 +109,13 @@ echo
 	echo "tg://proxy?server=$IP&port=443&secret=$secret" > ~/MTProxy-link.txt
 	echo 
     echo "Your MTProxy link writed to file and available at :"
-    echo ~/"MTProxy-link.txt"
+    echo "/root/MTProxy-link.txt"
     echo
     echo
-	echo "If you need to Check MTProxy status, it should be active you can run mtproxy-status located at :"~/"mtproxy-status"
+	echo "If you need to Check MTProxy status, it should be active you can run mtproxy-status located at :/root/mtproxy-status"
 	echo
 	echo "Example : sh mtproxy-status"
 	echo
-	echo "If you need to Uninstall  MTProxy you can run mtproxy-remove located at :"~/"mtproxy-remove"
+	echo "If you need to Uninstall  MTProxy you can run mtproxy-remove located at :/root/mtproxy-remove"
 	echo
 	echo "Example : sh mtproxy-remove"

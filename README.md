@@ -1,5 +1,5 @@
 # MTProxy-install
-MTProxy installer for CentOS.
+MTProxy installer for Debian, Ubuntu and CentOS.
 
 This script will let you setup your own MTProxy server in no more than a minute, even if you haven't used MTProxy before. It has been designed to be as unobtrusive and universal as possible.
 
